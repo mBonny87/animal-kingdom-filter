@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Combobox,
   ComboboxProps,
@@ -6,7 +5,6 @@ import {
   Virtualizer,
   VirtualizerSlots,
 } from "@fluentui/react-components/unstable";
-import styles from "./index.module.css";
 import { Label, useId } from "@fluentui/react-components";
 import { useComboStyles } from "./style";
 
@@ -72,11 +70,3 @@ export const CustomCombobox = ({
     </div>
   );
 };
-
-{
-  /* {options.map(({ id, title }) => (
-            <Option aria-posinset={id} key={id}>
-              {title}
-            </Option>
-          ))} */
-}

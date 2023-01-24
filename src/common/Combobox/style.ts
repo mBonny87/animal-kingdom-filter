@@ -7,7 +7,6 @@ export const useComboStyles = makeStyles({
     flexDirection: "column",
     justifyContent: "center",
     width: "100%",
-    marginBottom: "2rem",
     ...shorthands.padding("1rem"),
   },
   sLabel: {
