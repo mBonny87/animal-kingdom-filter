@@ -1,23 +1,30 @@
 import { useCallback } from "react";
 
-type IAction = {
-  type: "ADD" | "UPDATE" | "REMOVE_LEAF" | "REMOVE_PARTIALLY" | "CLEAR";
+interface IAction {
+  type: IFilterDispatch;
   payload: any;
-};
+}
 
-type IFilter =
-  | {
-      id: string;
-      title: string;
-      Node: IFilter[];
-    }
-  | {};
+type IFilterDispatch =
+  | "ADD"
+  | "UPDATE"
+  | "REMOVE_LEAF"
+  | "REMOVE_PARTIALLY"
+  | "CLEAR";
+
+interface IFilter {
+  id: string;
+  title: string;
+  Node: IPartialFilter[];
+}
+
+type IPartialFilter = Partial<IFilter>;
 
 export const useFilter = (
-  filter: IFilter,
+  filter: IPartialFilter,
   dispatch: React.Dispatch<IAction>
 ) => {
-  const addNode = useCallback((payload: IFilter) => {
+  const addNode = useCallback((payload: IPartialFilter) => {
     dispatch({ type: "ADD", payload });
   }, []);
 
@@ -26,10 +33,13 @@ export const useFilter = (
   };
 };
 
-export const filterReducer = (state: IFilter, action: IAction): IFilter => {
+export const filterReducer = (
+  state: IPartialFilter,
+  action: IAction
+): IPartialFilter => {
   switch (action.type) {
     case "ADD": // it adds a filter to the tree (it adds a new level of research)
-      console.log(action.payload);
+      console.log(action.payload); //!make changes to the state
       return state;
     case "UPDATE": //it updates a filter inside the tree (it updates an existing level of research)
       return state;

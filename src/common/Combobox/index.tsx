@@ -36,8 +36,8 @@ export const CustomCombobox = ({
           listbox={{
             className: sListbox,
           }}
-          onOptionSelect={(e, { optionText: key, optionValue: value }) =>
-            addNode({ key, value })
+          onOptionSelect={(e, { optionText: id, optionValue: title }) =>
+            addNode({ id, title })
           }
           {...rest}
         >
