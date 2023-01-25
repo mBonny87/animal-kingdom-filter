@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 type IAction = {
   type: "ADD" | "UPDATE" | "REMOVE_LEAF" | "REMOVE_PARTIALLY" | "CLEAR";
   payload: any;
@@ -10,6 +12,19 @@ type IFilter =
       Node: IFilter[];
     }
   | {};
+
+export const useFilter = (
+  filter: IFilter,
+  dispatch: React.Dispatch<IAction>
+) => {
+  const addNode = useCallback((payload: IFilter) => {
+    dispatch({ type: "ADD", payload });
+  }, []);
+
+  return {
+    addNode,
+  };
+};
 
 export const filterReducer = (state: IFilter, action: IAction): IFilter => {
   switch (action.type) {

@@ -8,7 +8,7 @@ import {
 import { Label, useId } from "@fluentui/react-components";
 import { useComboStyles } from "./style";
 import { useReducer } from "react";
-import { filterReducer } from "../../hooks/useFilter";
+import { filterReducer, useFilter } from "../../hooks/useFilter";
 
 interface ICustomComboboxProps extends ComboboxProps {
   label: string;
@@ -22,8 +22,8 @@ export const CustomCombobox = ({
 }: ICustomComboboxProps) => {
   const comboId = useId();
   const { sContainer, sLabel, sListbox } = useComboStyles();
-
   const [filter, dispatch] = useReducer(filterReducer, {});
+  const { addNode } = useFilter(filter, dispatch);
 
   if (options.length <= 100)
     return (
@@ -36,15 +36,9 @@ export const CustomCombobox = ({
           listbox={{
             className: sListbox,
           }}
-          onOptionSelect={(e, { optionText: key, optionValue: value }) => {
-            dispatch({
-              type: "ADD",
-              payload: {
-                key,
-                value,
-              },
-            });
-          }}
+          onOptionSelect={(e, { optionText: key, optionValue: value }) =>
+            addNode({ key, value })
+          }
           {...rest}
         >
           {options.map((option) => (
