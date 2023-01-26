@@ -15,16 +15,14 @@ type IFilterDispatch =
 interface IFilter {
   id: string;
   title: string;
-  Node: IPartialFilter[];
+  Node: Partial<IFilter>[];
 }
 
-type IPartialFilter = Partial<IFilter>;
-
 export const useFilter = (
-  filter: IPartialFilter,
+  filter: Partial<IFilter>,
   dispatch: React.Dispatch<IAction>
 ) => {
-  const addNode = useCallback((payload: IPartialFilter) => {
+  const addNode = useCallback((payload: Partial<IFilter>) => {
     dispatch({ type: "ADD", payload });
   }, []);
 
@@ -34,9 +32,9 @@ export const useFilter = (
 };
 
 export const filterReducer = (
-  state: IPartialFilter,
+  state: Partial<IFilter>,
   action: IAction
-): IPartialFilter => {
+): Partial<IFilter> => {
   switch (action.type) {
     case "ADD": // it adds a filter to the tree (it adds a new level of research)
       console.log(action.payload); //!make changes to the state
