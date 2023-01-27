@@ -3,28 +3,57 @@ import {
   ComboboxProps,
   Option,
   Virtualizer,
-  VirtualizerSlots,
 } from "@fluentui/react-components/unstable";
-import { Label, useId } from "@fluentui/react-components";
+import { Label, Spinner, useId } from "@fluentui/react-components";
 import { useComboStyles } from "./style";
-import { useReducer } from "react";
-import { filterReducer, useFilter } from "../../hooks/useFilter";
 
 interface ICustomComboboxProps extends ComboboxProps {
   label: string;
   options: { id: string; title: string; description: string }[];
+  loading: boolean;
+  onExternalFilter: (
+    id:
+      | React.ChangeEvent<HTMLElement>
+      | React.KeyboardEvent<HTMLElement>
+      | React.MouseEvent<HTMLElement>,
+    title: OptionOnSelectData
+  ) => void;
 }
+
+type OptionOnSelectData = {
+  optionValue: string | undefined;
+  optionText: string | undefined;
+  selectedOptions: string[];
+};
 
 export const CustomCombobox = ({
   options,
   label,
+  loading,
+  onExternalFilter,
   ...rest
 }: ICustomComboboxProps) => {
   const comboId = useId();
   const { sContainer, sLabel, sListbox } = useComboStyles();
-  const [filter, dispatch] = useReducer(filterReducer, {});
-  const { addNode } = useFilter(filter, dispatch);
 
+  if (loading) {
+    return (
+      <div className={sContainer}>
+        <Label className={sLabel} id={comboId}>
+          {label}
+        </Label>
+        <Combobox
+          expandIcon={<Spinner />}
+          aria-labelledby={comboId}
+          placeholder={`Select a ${label.toLowerCase()}`}
+          listbox={{
+            className: sListbox,
+          }}
+          {...rest}
+        ></Combobox>
+      </div>
+    );
+  }
   if (options.length <= 100)
     return (
       <div className={sContainer}>
@@ -36,9 +65,8 @@ export const CustomCombobox = ({
           listbox={{
             className: sListbox,
           }}
-          onOptionSelect={(e, { optionText: id, optionValue: title }) =>
-            addNode({ id, title })
-          }
+          placeholder={`Select a ${label.toLowerCase()}`}
+          onOptionSelect={onExternalFilter}
           {...rest}
         >
           {options.map((option) => (
@@ -60,6 +88,8 @@ export const CustomCombobox = ({
         listbox={{
           className: sListbox,
         }}
+        placeholder={`Select a ${label.toLowerCase()}`}
+        onOptionSelect={onExternalFilter}
         {...rest}
       >
         <Virtualizer
@@ -67,9 +97,13 @@ export const CustomCombobox = ({
           virtualizerLength={Math.trunc(options.length / (options.length / 50))}
           itemSize={Math.trunc(options.length / (options.length / 50))}
         >
-          {(index) => (
-            <Option key={index} text={options[index].title}>
-              {options[index].title}
+          {(i) => (
+            <Option
+              key={options[i].id}
+              value={options[i].title}
+              text={options[i].id}
+            >
+              {options[i].title}
             </Option>
           )}
         </Virtualizer>

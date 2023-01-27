@@ -15,7 +15,7 @@ type IFilterDispatch =
 interface IFilter {
   id: string;
   title: string;
-  Node: Partial<IFilter>[];
+  nodes: Partial<IFilter>[];
 }
 
 export const useFilter = (
@@ -37,7 +37,7 @@ export const filterReducer = (
 ): Partial<IFilter> => {
   switch (action.type) {
     case "ADD": // it adds a filter to the tree (it adds a new level of research)
-      console.log(action.payload); //!make changes to the state
+      // console.log(filter(action.payload)); //!make changes to the state
       return state;
     case "UPDATE": //it updates a filter inside the tree (it updates an existing level of research)
       return state;
@@ -50,4 +50,23 @@ export const filterReducer = (
     default:
       return state;
   }
+};
+
+export const filterTree = (array: Partial<IFilter>[], id: string) => {
+  let copy = [...array];
+  const getNodes = (result: Partial<IFilter>[], object: Partial<IFilter>) => {
+    if (object?.id?.includes(id)) {
+      result.push(object);
+      return result;
+    }
+
+    if (Array.isArray(object.nodes)) {
+      const nodes = object.nodes.reduce(getNodes, []);
+      if (nodes.length) result.push({ ...object, nodes });
+    }
+
+    return result;
+  };
+
+  return copy.reduce(getNodes, []);
 };
