@@ -3,32 +3,57 @@ import { Combobox, Option } from "@fluentui/react-components/unstable";
 import { phylum, classes, orders, families } from "./constant";
 import styles from "./App.module.css";
 import { CustomCombobox } from "./common/Combobox/index";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { getClasses, getFamilies, getOrders, getPhylums, getTree } from "./api";
-import { useReducer } from "react";
-import { filterReducer, filterTree, useFilter } from "./hooks/useFilter";
+import { filterTree, IFilter } from "./hooks/useFilter";
+import { useCallback, useState } from "react";
+
+interface IFilterTracker {
+  phylums: IFilter[];
+  classes: IFilter[];
+  orders: IFilter[];
+  families: IFilter[];
+}
 
 function App() {
-  const { data: phylums, loading: pLoad } = useQuery(getPhylums);
+  const { data: phylums, loading: pLoad } =
+    useQuery<Partial<IFilter[]>>(getPhylums);
   const { data: classes, loading: cLoad } = useQuery(getClasses);
   const { data: orders, loading: oLoad } = useQuery(getOrders);
   const { data: families, loading: fLoad } = useQuery(getFamilies);
-  const { data, loading } = useQuery(getTree);
-  const [filter, dispatch] = useReducer(filterReducer, {});
-  const { addNode } = useFilter(filter, dispatch);
+  const { data, loading } = useQuery<IFilter[]>(getTree);
+  const [filter, setFilter] = useState<IFilterTracker>({
+    phylums: [],
+    classes: [],
+    orders: [],
+    families: [],
+  });
+
+  const getOptions = useCallback(
+    (all: IFilter, filter: IFilterTracker, id: string) => {
+      if (filter[id].length)
+        return all?.nodes?.map(({ id, title, description }) => ({
+          id,
+          title,
+          description,
+        }));
+    },
+    []
+  );
+
   return (
     <div className={styles.filter}>
       <CustomCombobox
         label="Phylum"
-        options={phylums?.options}
+        options={getOptions(phylums, filter?.phylums, "phylums")}
         loading={pLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
         }
       />
-      <CustomCombobox
+      {/* <CustomCombobox
         label="Class"
-        options={classes?.options}
+        options={filter?.classes?.length ? filter.classes : classes?.options}
         loading={cLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
@@ -36,7 +61,7 @@ function App() {
       />
       <CustomCombobox
         label="Order"
-        options={orders?.options}
+        options={filter?.orders?.length ? filter.orders : orders?.options}
         loading={oLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
@@ -44,12 +69,12 @@ function App() {
       />
       <CustomCombobox
         label="Family"
-        options={families?.options}
+        options={filter?.families?.length ? filter.families : families?.options}
         loading={fLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
         }
-      />
+      /> */}
     </div>
   );
 }

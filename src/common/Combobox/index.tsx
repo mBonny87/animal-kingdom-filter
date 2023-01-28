@@ -6,6 +6,7 @@ import {
 } from "@fluentui/react-components/unstable";
 import { Label, Spinner, useId } from "@fluentui/react-components";
 import { useComboStyles } from "./style";
+import { useState } from "react";
 
 interface ICustomComboboxProps extends ComboboxProps {
   label: string;
@@ -35,6 +36,7 @@ export const CustomCombobox = ({
 }: ICustomComboboxProps) => {
   const comboId = useId();
   const { sContainer, sLabel, sListbox } = useComboStyles();
+  const [state, setState] = useState(options);
 
   if (loading) {
     return (
@@ -54,7 +56,7 @@ export const CustomCombobox = ({
       </div>
     );
   }
-  if (options.length <= 100)
+  if (state.length <= 100)
     return (
       <div className={sContainer}>
         <Label className={sLabel} id={comboId}>
@@ -69,7 +71,7 @@ export const CustomCombobox = ({
           onOptionSelect={onExternalFilter}
           {...rest}
         >
-          {options.map((option) => (
+          {state.map((option) => (
             <Option key={option.id} value={option.title} text={option.id}>
               {option.title}
             </Option>
@@ -93,17 +95,13 @@ export const CustomCombobox = ({
         {...rest}
       >
         <Virtualizer
-          numItems={options.length}
-          virtualizerLength={Math.trunc(options.length / (options.length / 50))}
-          itemSize={Math.trunc(options.length / (options.length / 50))}
+          numItems={state.length}
+          virtualizerLength={Math.trunc(state.length / (state.length / 50))}
+          itemSize={Math.trunc(state.length / (state.length / 50))}
         >
           {(i) => (
-            <Option
-              key={options[i].id}
-              value={options[i].title}
-              text={options[i].id}
-            >
-              {options[i].title}
+            <Option key={state[i].id} value={state[i].title} text={state[i].id}>
+              {state[i].title}
             </Option>
           )}
         </Virtualizer>
