@@ -15,13 +15,14 @@ interface IFilterTracker {
   families: IFilter[];
 }
 
+type IFilterTrackerProperty = keyof IFilterTracker;
+
 function App() {
-  const { data: phylums, loading: pLoad } =
-    useQuery<Partial<IFilter[]>>(getPhylums);
+  const { data: phylums, loading: pLoad } = useQuery(getPhylums);
   const { data: classes, loading: cLoad } = useQuery(getClasses);
   const { data: orders, loading: oLoad } = useQuery(getOrders);
   const { data: families, loading: fLoad } = useQuery(getFamilies);
-  const { data, loading } = useQuery<IFilter[]>(getTree);
+  const { data, loading } = useQuery(getTree);
   const [filter, setFilter] = useState<IFilterTracker>({
     phylums: [],
     classes: [],
@@ -30,13 +31,13 @@ function App() {
   });
 
   const getOptions = useCallback(
-    (all: IFilter, filter: IFilterTracker, id: string) => {
-      if (filter[id].length)
-        return all?.nodes?.map(({ id, title, description }) => ({
+    (all: IFilter, filter: IFilterTracker, id: string): IFilterTracker => {
+      if (filter[id as IFilterTrackerProperty].length)
+        return all?.nodes?.map(({ id, title }) => ({
           id,
           title,
-          description,
         }));
+      return { [id as IFilterTrackerProperty]: [] };
     },
     []
   );
@@ -45,7 +46,7 @@ function App() {
     <div className={styles.filter}>
       <CustomCombobox
         label="Phylum"
-        options={getOptions(phylums, filter?.phylums, "phylums")}
+        options={getOptions(phylums, filter, "phylums")}
         loading={pLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))

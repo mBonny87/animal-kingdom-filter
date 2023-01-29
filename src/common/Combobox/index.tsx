@@ -10,7 +10,7 @@ import { useState } from "react";
 
 interface ICustomComboboxProps extends ComboboxProps {
   label: string;
-  options: { id: string; title: string; description: string }[];
+  options: { id: string; title: string }[];
   loading: boolean;
   onExternalFilter: (
     id:
