@@ -30,23 +30,23 @@ function App() {
     families: [],
   });
 
-  const getOptions = useCallback(
-    (all: IFilter, filter: IFilterTracker, id: string): IFilterTracker => {
-      if (filter[id as IFilterTrackerProperty].length)
-        return all?.nodes?.map(({ id, title }) => ({
-          id,
-          title,
-        }));
-      return { [id as IFilterTrackerProperty]: [] };
-    },
-    []
-  );
+  // const getOptions = useCallback(
+  //   (all: IFilter, filter: IFilterTracker, id: string): Partial<IFilter> => {
+  //     if (filter[id as IFilterTrackerProperty].length)
+  //       return all?.nodes?.map(({ id, title }) => ({
+  //         id,
+  //         title,
+  //       })) as Partial<IFilter>;
+  //     return { [id as IFilterTrackerProperty]: [] };
+  //   },
+  //   []
+  // );
 
   return (
     <div className={styles.filter}>
       <CustomCombobox
         label="Phylum"
-        options={getOptions(phylums, filter, "phylums")}
+        options={phylums}
         loading={pLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
