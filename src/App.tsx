@@ -49,11 +49,8 @@ function App() {
             data?.nodes,
             id as string
           );
-          console.log("classes", classesNodes);
           const [{ nodes: ordersNodes }] = classesNodes as IFilter[];
-          console.log("orders", ordersNodes);
           const [{ nodes: familiesNodes }] = ordersNodes as Partial<IFilter>[]; //should not have nodes in this case
-          console.log("families", familiesNodes);
           setFilter({
             phylums: [{ id, title }] as Partial<IFilter>[],
             classes: classesNodes as Partial<IFilter>[],
@@ -66,25 +63,58 @@ function App() {
         label="Class"
         options={filter?.classes?.length ? filter.classes : classes?.options}
         loading={cLoad}
-        onExternalFilter={(e, { optionText: id, optionValue: title }) =>
-          console.log(filterTree(data?.nodes, id as string))
-        }
+        onExternalFilter={(e, { optionText: id, optionValue: title }) => {
+          const [{ nodes: classesNodes }] = filterTree(
+            data?.nodes,
+            id as string
+          );
+          const [{ nodes: ordersNodes }] = classesNodes as IFilter[];
+          const [{ nodes: familiesNodes }] = ordersNodes as Partial<IFilter>[]; //should not have nodes in this case
+          setFilter({
+            phylums: [{ id, title }] as Partial<IFilter>[],
+            classes: classesNodes as Partial<IFilter>[],
+            orders: ordersNodes as Partial<IFilter>[],
+            families: familiesNodes as Partial<IFilter>[],
+          });
+        }}
       />
       <CustomCombobox
         label="Order"
         options={filter?.orders?.length ? filter.orders : orders?.options}
         loading={oLoad}
-        onExternalFilter={(e, { optionText: id, optionValue: title }) =>
-          console.log(filterTree(data?.nodes, id as string))
-        }
+        onExternalFilter={(e, { optionText: id, optionValue: title }) => {
+          const [{ nodes: classesNodes }] = filterTree(
+            data?.nodes,
+            id as string
+          );
+          const [{ nodes: ordersNodes }] = classesNodes as IFilter[];
+          const [{ nodes: familiesNodes }] = ordersNodes as Partial<IFilter>[]; //should not have nodes in this case
+          setFilter({
+            phylums: [{ id, title }] as Partial<IFilter>[],
+            classes: classesNodes as Partial<IFilter>[],
+            orders: ordersNodes as Partial<IFilter>[],
+            families: familiesNodes as Partial<IFilter>[],
+          });
+        }}
       />
       <CustomCombobox
         label="Family"
         options={filter?.families?.length ? filter.families : families?.options}
         loading={fLoad}
-        onExternalFilter={(e, { optionText: id, optionValue: title }) =>
-          console.log(filterTree(data?.nodes, id as string))
-        }
+        onExternalFilter={(e, { optionText: id, optionValue: title }) => {
+          const [{ nodes: classesNodes }] = filterTree(
+            data?.nodes,
+            id as string
+          );
+          const [{ nodes: ordersNodes }] = classesNodes as IFilter[];
+          const [{ nodes: familiesNodes }] = ordersNodes as Partial<IFilter>[]; //should not have nodes in this case
+          setFilter({
+            phylums: [{ id, title }] as Partial<IFilter>[],
+            classes: classesNodes as Partial<IFilter>[],
+            orders: ordersNodes as Partial<IFilter>[],
+            families: familiesNodes as Partial<IFilter>[],
+          });
+        }}
       />
     </div>
   );

@@ -37,8 +37,6 @@ export const CustomCombobox = ({
   const comboId = useId();
   const { sContainer, sLabel, sListbox } = useComboStyles();
 
-  console.log(options);
-
   if (loading) {
     return (
       <div className={sContainer}>
