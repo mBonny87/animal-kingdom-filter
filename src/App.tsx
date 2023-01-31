@@ -42,7 +42,7 @@ function App() {
     <div className={styles.filter}>
       <CustomCombobox
         label="Phylum"
-        options={phylums.options}
+        options={phylums?.options}
         loading={pLoad}
         onExternalFilter={(e, { optionText: id, optionValue: title }) => {
           const [{ nodes: classesNodes }] = filterTree(
