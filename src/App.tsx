@@ -8,22 +8,18 @@ import { getClasses, getFamilies, getOrders, getPhylums, getTree } from "./api";
 import { filterTree, IFilter } from "./hooks/useFilter";
 import { useCallback, useState } from "react";
 
-interface IFilterTracker {
-  phylums: IFilter[];
-  classes: IFilter[];
-  orders: IFilter[];
-  families: IFilter[];
-}
-
-type IFilterTrackerProperty = keyof IFilterTracker;
-
 function App() {
   const { data: phylums, loading: pLoad } = useQuery(getPhylums);
   const { data: classes, loading: cLoad } = useQuery(getClasses);
   const { data: orders, loading: oLoad } = useQuery(getOrders);
   const { data: families, loading: fLoad } = useQuery(getFamilies);
   const { data, loading } = useQuery(getTree);
-  const [filter, setFilter] = useState<IFilterTracker>({
+  const [filter, setFilter] = useState<{
+    phylums: Partial<IFilter>[];
+    classes: Partial<IFilter>[];
+    orders: Partial<IFilter>[];
+    families: Partial<IFilter>[];
+  }>({
     phylums: [],
     classes: [],
     orders: [],
@@ -46,13 +42,27 @@ function App() {
     <div className={styles.filter}>
       <CustomCombobox
         label="Phylum"
-        options={phylums}
+        options={phylums.options}
         loading={pLoad}
-        onExternalFilter={(e, { optionText: id, optionValue: title }) =>
-          console.log(filterTree(data?.nodes, id as string))
-        }
+        onExternalFilter={(e, { optionText: id, optionValue: title }) => {
+          const [{ nodes: classesNodes }] = filterTree(
+            data?.nodes,
+            id as string
+          );
+          console.log("classes", classesNodes);
+          const [{ nodes: ordersNodes }] = classesNodes as IFilter[];
+          console.log("orders", ordersNodes);
+          const [{ nodes: familiesNodes }] = ordersNodes as Partial<IFilter>[]; //should not have nodes in this case
+          console.log("families", familiesNodes);
+          setFilter({
+            phylums: [{ id, title }] as Partial<IFilter>[],
+            classes: classesNodes as Partial<IFilter>[],
+            orders: ordersNodes as Partial<IFilter>[],
+            families: familiesNodes as Partial<IFilter>[],
+          });
+        }}
       />
-      {/* <CustomCombobox
+      <CustomCombobox
         label="Class"
         options={filter?.classes?.length ? filter.classes : classes?.options}
         loading={cLoad}
@@ -75,7 +85,7 @@ function App() {
         onExternalFilter={(e, { optionText: id, optionValue: title }) =>
           console.log(filterTree(data?.nodes, id as string))
         }
-      /> */}
+      />
     </div>
   );
 }

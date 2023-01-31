@@ -36,7 +36,8 @@ export const CustomCombobox = ({
 }: ICustomComboboxProps) => {
   const comboId = useId();
   const { sContainer, sLabel, sListbox } = useComboStyles();
-  const [state, setState] = useState(options);
+
+  console.log(options);
 
   if (loading) {
     return (
@@ -56,7 +57,7 @@ export const CustomCombobox = ({
       </div>
     );
   }
-  if (state.length <= 100)
+  if (options.length <= 100)
     return (
       <div className={sContainer}>
         <Label className={sLabel} id={comboId}>
@@ -71,7 +72,7 @@ export const CustomCombobox = ({
           onOptionSelect={onExternalFilter}
           {...rest}
         >
-          {state.map((option) => (
+          {options.map((option) => (
             <Option key={option.id} value={option.title} text={option.id}>
               {option.title}
             </Option>
@@ -95,13 +96,17 @@ export const CustomCombobox = ({
         {...rest}
       >
         <Virtualizer
-          numItems={state.length}
-          virtualizerLength={Math.trunc(state.length / (state.length / 50))}
-          itemSize={Math.trunc(state.length / (state.length / 50))}
+          numItems={options.length}
+          virtualizerLength={Math.trunc(options.length / (options.length / 50))}
+          itemSize={Math.trunc(options.length / (options.length / 50))}
         >
           {(i) => (
-            <Option key={state[i].id} value={state[i].title} text={state[i].id}>
-              {state[i].title}
+            <Option
+              key={options[i].id}
+              value={options[i].title}
+              text={options[i].id}
+            >
+              {options[i].title}
             </Option>
           )}
         </Virtualizer>
