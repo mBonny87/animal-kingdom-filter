@@ -1,12 +1,9 @@
-import { Label, useId } from "@fluentui/react-components";
-import { Combobox, Option } from "@fluentui/react-components/unstable";
-import { phylum, classes, orders, families } from "./constant";
 import styles from "./App.module.css";
 import { CustomCombobox } from "./common/Combobox/index";
 import { useQuery } from "@apollo/client";
 import { getClasses, getFamilies, getOrders, getPhylums, getTree } from "./api";
 import { filterTree, IFilter } from "./hooks/useFilter";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 function App() {
   const { data: phylums, loading: pLoad } = useQuery(getPhylums);
